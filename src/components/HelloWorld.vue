@@ -51,35 +51,57 @@ export default {
   mounted() {
     window.onscroll = () => {
       // 变量scrollTop是滚动条滚动时，距离顶部的距离
-      var scrollTop =
+      const scrollTop =
         document.documentElement.scrollTop || document.body.scrollTop
       // 变量windowHeight是可视区的高度
-      var windowHeight =
+      const windowHeight =
         document.documentElement.clientHeight || document.body.clientHeight
       // 变量scrollHeight是滚动条的总高度
-      var scrollHeight =
+      const scrollHeight =
         document.documentElement.scrollHeight || document.body.scrollHeight
       // 滚动条到底部的条件
       if (scrollTop + windowHeight === scrollHeight) {
         // 写后台加载数据的函数
-        console.log(
-          '距顶部' +
-            scrollTop +
-            '可视区高度' +
-            windowHeight +
-            '滚动条总高度' +
-            scrollHeight
-        )
-        this.nextData()
+        // console.log(
+        //   '距顶部' +
+        //     scrollTop +
+        //     '可视区高度' +
+        //     windowHeight +
+        //     '滚动条总高度' +
+        //     scrollHeight
+        // )
+        this.debounce(this.nextData(), 50, 300)
       }
     }
   },
   methods: {
+    debounce(callBack, delay, intervalTime) {
+      var timer = null // 定时器变量
+      var time = 0 // 时间变量
+      return function() {
+        var context = this
+        var curTime = new Date() // 当前执行的时间
+        clearTimeout(timer) //  清除上次的定时器
+
+        if (!time) {
+          time = curTime
+        }
+        // 当前执行时间距离上次执行的时间是否大于等于间隔时间
+        if (curTime - time >= intervalTime) {
+          time = curTime
+          callBack.apply(context, arguments)
+        } else {
+          timer = setTimeout(() => {
+            callBack.apply(context, arguments)
+          }, delay)
+        }
+      }
+    },
     toContent(href) {
       this.$router.push({ name: 'About', query: { href: href } })
     },
     nextData() {
-      console.log(this.lastDate)
+      console.log('执行了')
       this.$axios
         .post('https://undefined.net.cn/api/ithome', {
           time: this.lastDate
