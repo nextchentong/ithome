@@ -116,12 +116,15 @@ export default {
             } else {
               img = item.image
             }
-            data.push({
-              title: item.title,
-              href: item.WapNewsUrl,
-              time: item.orderdate,
-              img: img
-            })
+            console.log(item.NewsTips.length > 0)
+            if (item.NewsTips.length === 0) {
+              data.push({
+                title: item.title,
+                href: item.WapNewsUrl,
+                time: item.orderdate,
+                img: img
+              })
+            }
           })
           this.list = this.list.concat(data)
           this.lastDate = Date.parse(this.list[this.list.length - 1].time)
