@@ -11,9 +11,11 @@
           <h1 class="title">
             {{item.title}}
           </h1>
-          <span>{{item.time}}</span>
+          <span v-if="item.time&&!item.time.time">{{item.time}}</span>
+          <span v-if="item.time&&item.time.time">{{item.time.time}}</span>
         </div>
-        <img class="img"
+        <img class="
+                img"
              :src="item.img"
              v-if="! (item.img instanceof Array)">
         <img class="img"
@@ -23,6 +25,20 @@
       </div>
 
     </div>
+    <el-backtop target=".home"
+                :bottom="100">
+      <div style="{
+        height: 100%;
+        width: 100%;
+        background-color: #f2f5f6;
+        box-shadow: 0 0 6px rgba(0,0,0, .12);
+        text-align: center;
+        line-height: 40px;
+        color: #1989fa;
+      }">
+        UP
+      </div>
+    </el-backtop>
   </div>
 </template>
 
@@ -45,6 +61,18 @@ export default {
     })
       .then(res => {
         console.log(res.data)
+        const data = res.data
+        data.forEach((item, index) => {
+          if (index !== 0) {
+            if (item.time) {
+              let time = item.time
+              time = '今天' + time
+              data[index].time = time
+            } else {
+              data[index].time = '置顶'
+            }
+          }
+        })
         this.list = res.data
         this.lastDate = Date.parse(this.list[0].lastDate)
       })
@@ -74,7 +102,7 @@ export default {
         //     '滚动条总高度' +
         //     scrollHeight
         // )
-        this.debounce(this.nextData(), 50, 300)
+        // this.debounce(this.nextData(), 50, 300)
       }
     }
   },
@@ -120,19 +148,34 @@ export default {
             } else {
               img = item.image
             }
-            console.log(item.NewsTips.length > 0)
-            if (item.NewsTips.length === 0) {
-              data.push({
-                title: item.title,
-                href: item.WapNewsUrl,
-                time: item.orderdate,
-                img: img
-              })
+            if (item.orderdate) {
+              let time = item.orderdate.replace('T', ' ')
+              console.log(this.$moment(time).format('MMMM Do YYYY, HH:mm:ss a'))
+              time = this.$moment(time).calendar()
+
+              // const nowTime = new Date().getDate()
+              // const year = new Date().getFullYear()
+              // if (time.indexOf(nowTime) !== -1) {
+              //   time = time.substr(10, 6)
+              // }
+              // if (time.indexOf(year) !== -1) {
+              //   time = time.substr(5)
+              // }
+              if (item.NewsTips.length === 0) {
+                data.push({
+                  title: item.title,
+                  href: item.WapNewsUrl,
+                  time: { time: time, orderdate: item.orderdate },
+                  img: img
+                })
+              }
             }
           })
           this.list = this.list.concat(data)
-          this.lastDate = Date.parse(this.list[this.list.length - 1].time)
-          console.log('最后:' + this.list[this.list.length - 1].time)
+          this.lastDate = Date.parse(
+            this.list[this.list.length - 1].time.orderdate
+          )
+          console.log('最后:' + this.list[this.list.length - 1].time.orderdate)
         })
         .catch(function(error) {
           console.log(error)
