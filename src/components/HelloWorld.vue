@@ -1,24 +1,28 @@
 <template>
   <div class="home">
-    <div v-for="(item,index) in list"
-         :key="index"
-         class="item"
-         @click="toContent(item.href)">
-      <div class="left">
-        <h1 class="title">
-          {{item.title}}
-        </h1>
-        <span>{{item.time}}</span>
+    <div v-infinite-scroll="nextData"
+         class="content-wrapper"
+         infinite-scroll-immediate=false>
+      <div v-for="(item,index) in list"
+           :key="index"
+           class="item"
+           @click="toContent(item.href)">
+        <div class="left">
+          <h1 class="title">
+            {{item.title}}
+          </h1>
+          <span>{{item.time}}</span>
+        </div>
+        <img class="img"
+             :src="item.img"
+             v-if="! (item.img instanceof Array)">
+        <img class="img"
+             :src="item.img[0]"
+             v-else>
+
       </div>
-      <img class="img"
-           :src="item.img"
-           v-if="! (item.img instanceof Array)">
-      <img class="img"
-           :src="item.img[0]"
-           v-else>
 
     </div>
-
   </div>
 </template>
 
@@ -141,25 +145,28 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="stylus">
 .home
-  .item
-    display flex
-    margin 3.5% 0
-    line-height 1.5
-    overflow hidden
-    width 100%
-    box-sizing border-box
-    align-items center
-    padding 0 2.5%
-    .left
-      width 69%
-      margin-right 1%
-      color #fff
-      .title
-        margin-bottom 1%
-    .img
-      width 30%
-      object-fit contain
-      border-radius 0.2rem
+  .content-wrapper
+    overflow auto
+    height 100vh
+    .item
+      display flex
+      margin 3.5% 0
+      line-height 1.5
+      overflow hidden
+      width 100%
+      box-sizing border-box
+      align-items center
+      padding 0 2.5%
+      .left
+        width 69%
+        margin-right 1%
+        color #fff
+        .title
+          margin-bottom 1%
+      .img
+        width 30%
+        object-fit contain
+        border-radius 0.2rem
 a
   text-decoration none
 a:link /* 未访问的链接 */
