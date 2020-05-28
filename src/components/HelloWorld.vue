@@ -1,8 +1,10 @@
 <template>
-  <div class="home">
-    <div v-infinite-scroll="nextData"
-         class="content-wrapper"
-         infinite-scroll-immediate=false>
+  <div class="home"
+       v-infinite-scroll="nextData"
+       :infinite-scroll-disabled="busy"
+       infinite-scroll-immediate-check=false
+       infinite-scroll-distance="40">
+    <div class="content-wrapper">
       <div v-for="(item,index) in list"
            :key="index"
            class="item"
@@ -23,22 +25,10 @@
              v-else>
 
       </div>
-
+      <div class="back-top"
+           v-show="showBackTop"
+           @click="goBackTop">Top</div>
     </div>
-    <el-backtop target=".home"
-                :bottom="100">
-      <div style="{
-        height: 100%;
-        width: 100%;
-        background-color: #f2f5f6;
-        box-shadow: 0 0 6px rgba(0,0,0, .12);
-        text-align: center;
-        line-height: 40px;
-        color: #1989fa;
-      }">
-        UP
-      </div>
-    </el-backtop>
   </div>
 </template>
 
@@ -47,7 +37,9 @@ export default {
   data() {
     return {
       list: [],
-      lastDate: -1
+      lastDate: -1,
+      busy: false,
+      showBackTop: false
     }
   },
   name: 'HelloWorld',
@@ -82,28 +74,33 @@ export default {
   },
   mounted() {
     window.onscroll = () => {
-      // 变量scrollTop是滚动条滚动时，距离顶部的距离
-      const scrollTop =
-        document.documentElement.scrollTop || document.body.scrollTop
-      // 变量windowHeight是可视区的高度
-      const windowHeight =
-        document.documentElement.clientHeight || document.body.clientHeight
-      // 变量scrollHeight是滚动条的总高度
-      const scrollHeight =
-        document.documentElement.scrollHeight || document.body.scrollHeight
-      // 滚动条到底部的条件
-      if (scrollTop + windowHeight === scrollHeight) {
-        // 写后台加载数据的函数
-        // console.log(
-        //   '距顶部' +
-        //     scrollTop +
-        //     '可视区高度' +
-        //     windowHeight +
-        //     '滚动条总高度' +
-        //     scrollHeight
-        // )
-        // this.debounce(this.nextData(), 50, 300)
+      if (
+        (document.body.scrollTop = document.documentElement.scrollTop === 0)
+      ) {
+        this.showBackTop = false
       }
+      //   // 变量scrollTop是滚动条滚动时，距离顶部的距离
+      //   const scrollTop =
+      //     document.documentElement.scrollTop || document.body.scrollTop
+      //   // 变量windowHeight是可视区的高度
+      //   const windowHeight =
+      //     document.documentElement.clientHeight || document.body.clientHeight
+      //   // 变量scrollHeight是滚动条的总高度
+      //   const scrollHeight =
+      //     document.documentElement.scrollHeight || document.body.scrollHeight
+      //   // 滚动条到底部的条件
+      //   if (scrollTop + windowHeight === scrollHeight) {
+      //     // 写后台加载数据的函数
+      //     // console.log(
+      //     //   '距顶部' +
+      //     //     scrollTop +
+      //     //     '可视区高度' +
+      //     //     windowHeight +
+      //     //     '滚动条总高度' +
+      //     //     scrollHeight
+      //     // )
+      //     // this.debounce(this.nextData(), 50, 300)
+      //   }
     }
   },
   methods: {
@@ -129,10 +126,16 @@ export default {
         }
       }
     },
+    goBackTop() {
+      document.body.scrollTop = document.documentElement.scrollTop = 0
+      this.showBackTop = false
+    },
     toContent(href) {
       this.$router.push({ name: 'About', query: { href: href } })
     },
     nextData() {
+      this.showBackTop = true
+      this.busy = true
       console.log('执行了')
       this.$axios
         .post('https://undefined.net.cn/api/ithome', {
@@ -175,6 +178,7 @@ export default {
           this.lastDate = Date.parse(
             this.list[this.list.length - 1].time.orderdate
           )
+          this.busy = false
           console.log('最后:' + this.list[this.list.length - 1].time.orderdate)
         })
         .catch(function(error) {
@@ -188,9 +192,22 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="stylus">
 .home
+  .back-top
+    background-color red
+    position fixed
+    right 5%
+    bottom 5%
+    border-radius 50%
+    width 50px
+    height 50px
+    display flex
+    justify-content center
+    align-items center
+    background-color #f2f5f6
+    box-shadow 0 0 6px rgba(0, 0, 0, 0.12)
+    color #1989fa
+    font-size 20px
   .content-wrapper
-    overflow auto
-    height 100vh
     .item
       display flex
       margin 3.5% 0
