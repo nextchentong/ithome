@@ -29,10 +29,14 @@ export default {
       .then(response => {
         console.log(response.data)
         console.log(response.data.indexOf('<dir>'))
-        this.content = response.data.substring(
-          0,
-          response.data.indexOf('<dir>')
-        )
+        if (response.data.indexOf('<dir>') !== -1) {
+          this.content = response.data.substring(
+            0,
+            response.data.indexOf('<dir>')
+          )
+        } else {
+          this.content = response.data
+        }
       })
       .catch(function(error) {
         console.log(error)
