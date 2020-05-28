@@ -6,7 +6,6 @@ import './common/css/index.css'
 import axios from 'axios'
 import moment from 'moment'
 import vueiInfinite from 'vue-infinite-scroll'
-import '@/common/js/vconsole.js'
 
 Vue.use(vueiInfinite)
 moment.locale('zh-cn')
