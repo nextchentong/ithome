@@ -27,8 +27,12 @@ export default {
         href: this.href
       })
       .then(response => {
-        console.log(response)
-        this.content = response.data
+        console.log(response.data)
+        console.log(response.data.indexOf('<dir>'))
+        this.content = response.data.substring(
+          0,
+          response.data.indexOf('<dir>')
+        )
       })
       .catch(function(error) {
         console.log(error)
