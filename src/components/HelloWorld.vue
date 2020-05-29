@@ -1,9 +1,5 @@
 <template>
-  <div class="home"
-       v-infinite-scroll="nextData"
-       :infinite-scroll-disabled="busy"
-       infinite-scroll-immediate-check=false
-       infinite-scroll-distance="40">
+  <div class="home">
     <div class="content-wrapper">
       <div v-for="(item,index) in list"
            :key="index"
@@ -38,7 +34,6 @@ export default {
     return {
       list: [],
       lastDate: -1,
-      busy: false,
       showBackTop: false
     }
   },
@@ -103,6 +98,52 @@ export default {
       //     // this.debounce(this.nextData(), 50, 300)
       //   }
     }
+    const listDom = document.getElementsByClassName('content-wrapper')[0]
+    const callback = (mutationsList, observer) => {
+      for (const mutation of mutationsList) {
+        if (mutation.type === 'childList') {
+        }
+      }
+    }
+    /**
+     * 使用MutationObserver监听列表的 DOM 改变
+     */
+
+    const observer = new MutationObserver(callback)
+    const config = {
+      attributes: true,
+      childList: true,
+      subtree: true
+    }
+    observer.observe(listDom, config)
+    console.log(listDom)
+
+    /**
+     * clientHeight 滚动可视区域高度
+     * scrollTop 当前滚动位置
+     * scrollHeight 整个滚动高度
+     */
+    const scrollDom = document.getElementsByClassName('home')[0]
+
+    scrollDom.onscroll = () => {
+      console.log(
+        'clientHeight:' +
+          scrollDom.clientHeight +
+          ' ' +
+          'scrollTop:' +
+          parseInt(scrollDom.scrollTop) +
+          ' ' +
+          'scrollHeight:' +
+          scrollDom.scrollHeight
+      )
+      if (
+        scrollDom.clientHeight + parseInt(scrollDom.scrollTop) + 40 >
+        scrollDom.scrollHeight
+      ) {
+        console.log('执行了')
+        this.nextData()
+      }
+    }
   },
   methods: {
     debounce(callBack, delay, intervalTime) {
@@ -143,7 +184,6 @@ export default {
     },
     nextData() {
       this.showBackTop = true
-      this.busy = true
       console.log('执行了')
       this.$axios
         .post('https://undefined.net.cn/api/ithome', {
@@ -161,7 +201,7 @@ export default {
             }
             if (item.orderdate) {
               let time = item.orderdate.replace('T', ' ')
-              console.log(this.$moment(time).format('MMMM Do YYYY, HH:mm:ss a'))
+              // console.log(this.$moment(time).format('MMMM Do YYYY, HH:mm:ss a'))
               time = this.$moment(time).calendar()
 
               // const nowTime = new Date().getDate()
@@ -186,7 +226,7 @@ export default {
           this.lastDate = Date.parse(
             this.list[this.list.length - 1].time.orderdate
           )
-          this.busy = false
+
           console.log('最后:' + this.list[this.list.length - 1].time.orderdate)
         })
         .catch(function(error) {
@@ -200,6 +240,8 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="stylus">
 .home
+  height 100vh
+  overflow auto
   .back-top
     background-color red
     position fixed
