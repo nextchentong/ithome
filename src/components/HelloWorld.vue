@@ -67,6 +67,7 @@ export default {
         })
         this.list = res.data
         this.lastDate = Date.parse(this.list[0].lastDate)
+        this.list.splice(0, 1)
       })
       .catch(error => {
         console.log(error)
@@ -234,6 +235,7 @@ export default {
         width 30%
         object-fit contain
         border-radius 0.2rem
+        height 80.16px
 a
   text-decoration none
 a:link /* 未访问的链接 */
