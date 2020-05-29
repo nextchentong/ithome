@@ -70,11 +70,11 @@ export default {
   },
   mounted() {
     window.onscroll = () => {
-      if (
-        (document.body.scrollTop = document.documentElement.scrollTop === 0)
-      ) {
-        this.showBackTop = false
-      }
+      // if (
+      //   (document.body.scrollTop = document.documentElement.scrollTop === 0)
+      // ) {
+      //   this.showBackTop = false
+      // }
       //   // 变量scrollTop是滚动条滚动时，距离顶部的距离
       //   const scrollTop =
       //     document.documentElement.scrollTop || document.body.scrollTop
@@ -143,6 +143,12 @@ export default {
         console.log('执行了')
         this.nextData()
       }
+      if (scrollDom.scrollTop === 0) {
+        this.showBackTop = false
+      }
+      if (scrollDom.scrollTop >= scrollDom.clientHeight) {
+        this.showBackTop = true
+      }
     }
   },
   methods: {
@@ -169,7 +175,8 @@ export default {
       }
     },
     goBackTop() {
-      document.body.scrollTop = document.documentElement.scrollTop = 0
+      const scrollDom = document.getElementsByClassName('home')[0]
+      scrollDom.scrollTop = 0
       this.showBackTop = false
     },
     toContent(item) {
@@ -183,7 +190,6 @@ export default {
       })
     },
     nextData() {
-      this.showBackTop = true
       console.log('执行了')
       this.$axios
         .post('https://undefined.net.cn/api/ithome', {
@@ -229,7 +235,7 @@ export default {
 
           console.log('最后:' + this.list[this.list.length - 1].time.orderdate)
         })
-        .catch(function(error) {
+        .catch(error => {
           console.log(error)
         })
     }
