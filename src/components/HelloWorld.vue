@@ -8,7 +8,7 @@
       <div v-for="(item,index) in list"
            :key="index"
            class="item"
-           @click="toContent(item.href,item.title,item.time)">
+           @click="toContent(item)">
         <div class="left">
           <h1 class="title">
             {{item.title}}
@@ -130,10 +130,14 @@ export default {
       document.body.scrollTop = document.documentElement.scrollTop = 0
       this.showBackTop = false
     },
-    toContent(href, title, time) {
+    toContent(item) {
       this.$router.push({
         name: 'About',
-        query: { href: href, title: title, time: time }
+        query: {
+          href: item.href,
+          title: item.title,
+          time: item.time.time || item.time
+        }
       })
     },
     nextData() {
