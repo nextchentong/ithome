@@ -34,7 +34,8 @@ export default {
     return {
       list: [],
       lastDate: -1,
-      showBackTop: false
+      showBackTop: false,
+      busy: true
     }
   },
   name: 'HelloWorld',
@@ -141,7 +142,9 @@ export default {
         scrollDom.scrollHeight
       ) {
         console.log('执行了')
-        this.nextData()
+        if (this.busy) {
+          this.nextData()
+        }
       }
       if (scrollDom.scrollTop === 0) {
         this.showBackTop = false
@@ -190,6 +193,7 @@ export default {
       })
     },
     nextData() {
+      this.busy = false
       console.log('执行了')
       this.$axios
         .post('https://undefined.net.cn/api/ithome', {
@@ -234,6 +238,7 @@ export default {
           )
 
           console.log('最后:' + this.list[this.list.length - 1].time.orderdate)
+          this.busy = true
         })
         .catch(error => {
           console.log(error)
