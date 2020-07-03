@@ -1,5 +1,5 @@
 <template>
-  <div class="home">
+  <div class="home"  ref="wrapper">
     <div class="content-wrapper">
       <div v-for="(item,index) in list"
            :key="index"
@@ -32,6 +32,7 @@
 export default {
   data() {
     return {
+      scroll: 0,
       list: [],
       lastDate: -1,
       showBackTop: false,
@@ -68,6 +69,10 @@ export default {
       .catch(error => {
         console.log(error)
       })
+  },
+  activated () {
+    console.log('返回了')
+    this.$refs.wrapper.scrollTop = this.scroll
   },
   mounted() {
     window.onscroll = () => {
@@ -127,21 +132,20 @@ export default {
     const scrollDom = document.getElementsByClassName('home')[0]
 
     scrollDom.onscroll = () => {
-      console.log(
-        'clientHeight:' +
-          scrollDom.clientHeight +
-          ' ' +
-          'scrollTop:' +
-          parseInt(scrollDom.scrollTop) +
-          ' ' +
-          'scrollHeight:' +
-          scrollDom.scrollHeight
-      )
+      // console.log(
+      //   'clientHeight:' +
+      //     scrollDom.clientHeight +
+      //     ' ' +
+      //     'scrollTop:' +
+      //     parseInt(scrollDom.scrollTop) +
+      //     ' ' +
+      //     'scrollHeight:' +
+      //     scrollDom.scrollHeight
+      // )
       if (
         scrollDom.clientHeight + parseInt(scrollDom.scrollTop) + 40 >
         scrollDom.scrollHeight
       ) {
-        console.log('执行了')
         if (this.busy) {
           this.nextData()
         }
@@ -183,6 +187,9 @@ export default {
       this.showBackTop = false
     },
     toContent(item) {
+      const wrapperScrollTop = this.$refs.wrapper.scrollTop
+      console.log(wrapperScrollTop)
+      this.scroll = wrapperScrollTop
       this.$router.push({
         name: 'About',
         query: {

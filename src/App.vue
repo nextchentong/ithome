@@ -1,9 +1,9 @@
 <template>
   <div id="app">
-
-    <keep-alive include="Home">
+    <keep-alive>
       <router-view></router-view>
     </keep-alive>
+
   </div>
 </template>
 <script>
