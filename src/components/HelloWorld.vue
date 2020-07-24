@@ -70,40 +70,7 @@ export default {
         console.log(error)
       })
   },
-  activated () {
-    console.log('返回了')
-    this.$refs.wrapper.scrollTop = this.scroll
-  },
   mounted() {
-    window.onscroll = () => {
-      // if (
-      //   (document.body.scrollTop = document.documentElement.scrollTop === 0)
-      // ) {
-      //   this.showBackTop = false
-      // }
-      //   // 变量scrollTop是滚动条滚动时，距离顶部的距离
-      //   const scrollTop =
-      //     document.documentElement.scrollTop || document.body.scrollTop
-      //   // 变量windowHeight是可视区的高度
-      //   const windowHeight =
-      //     document.documentElement.clientHeight || document.body.clientHeight
-      //   // 变量scrollHeight是滚动条的总高度
-      //   const scrollHeight =
-      //     document.documentElement.scrollHeight || document.body.scrollHeight
-      //   // 滚动条到底部的条件
-      //   if (scrollTop + windowHeight === scrollHeight) {
-      //     // 写后台加载数据的函数
-      //     // console.log(
-      //     //   '距顶部' +
-      //     //     scrollTop +
-      //     //     '可视区高度' +
-      //     //     windowHeight +
-      //     //     '滚动条总高度' +
-      //     //     scrollHeight
-      //     // )
-      //     // this.debounce(this.nextData(), 50, 300)
-      //   }
-    }
     const listDom = document.getElementsByClassName('content-wrapper')[0]
     const callback = (mutationsList, observer) => {
       for (const mutation of mutationsList) {
@@ -129,19 +96,9 @@ export default {
      * scrollTop 当前滚动位置
      * scrollHeight 整个滚动高度
      */
-    const scrollDom = document.getElementsByClassName('home')[0]
-
+    // const scrollDom = document.getElementsByClassName('home')[0]
+    const scrollDom = this.$refs.wrapper
     scrollDom.onscroll = () => {
-      // console.log(
-      //   'clientHeight:' +
-      //     scrollDom.clientHeight +
-      //     ' ' +
-      //     'scrollTop:' +
-      //     parseInt(scrollDom.scrollTop) +
-      //     ' ' +
-      //     'scrollHeight:' +
-      //     scrollDom.scrollHeight
-      // )
       if (
         scrollDom.clientHeight + parseInt(scrollDom.scrollTop) + 40 >
         scrollDom.scrollHeight
@@ -182,8 +139,9 @@ export default {
       }
     },
     goBackTop() {
-      const scrollDom = document.getElementsByClassName('home')[0]
-      scrollDom.scrollTop = 0
+      this.$refs.wrapper.scrollTop = 0
+      // const scrollDom = document.getElementsByClassName('home')[0]
+      // scrollDom.scrollTop = 0
       this.showBackTop = false
     },
     toContent(item) {
@@ -201,7 +159,6 @@ export default {
     },
     nextData() {
       this.busy = false
-      console.log('执行了')
       this.$axios
         .post('https://undefined.net.cn/api/ithome', {
           time: this.lastDate
