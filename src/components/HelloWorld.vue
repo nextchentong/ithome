@@ -288,7 +288,7 @@ export default {
       .left
         width 69%
         margin-right 1%
-        color #fff
+        color #000
         .title
           margin-bottom 1%
       .img

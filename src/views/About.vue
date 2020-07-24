@@ -48,7 +48,7 @@ export default {
 </script>
 <style lang="stylus" scoped>
 .content
-  color #fff
+  color #000
   padding 5%
   box-sizing border-box
   width 100vw
